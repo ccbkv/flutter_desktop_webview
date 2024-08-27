@@ -18,6 +18,7 @@
 #include "flutter/method_result_functions.h"
 #include "strconv.h"
 #include "utils.h"
+#include "WebView2EnvironmentOptions.h"
 
 namespace webview_window {
 
@@ -35,7 +36,7 @@ namespace webview_window {
         std::shared_ptr<flutter::MethodChannel<flutter::EncodableValue>>
         method_channel,
         int64_t web_view_id, std::wstring userDataFolder,
-        std::function<void(HRESULT)> on_web_view_created)
+        std::function<void(HRESULT)> on_web_view_created, std::wstring proxy)
         : method_channel_(std::move(method_channel)),
         web_view_id_(web_view_id),
         user_data_folder_(std::move(userDataFolder)),
@@ -50,8 +51,17 @@ namespace webview_window {
             return;
         }
 
+        auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+        if(proxy.size()) {
+            proxy = (std::wstring(L"--proxy-server=") + proxy);
+            auto _proxy = new wchar_t[proxy.size() + 1];
+            memcpy(_proxy, proxy.c_str(), proxy.length() * sizeof(wchar_t));
+            _proxy[proxy.size()] = L'\0';
+            options->put_AdditionalBrowserArguments(_proxy);
+        }
+
         CreateCoreWebView2EnvironmentWithOptions(
-            nullptr, user_data_folder_.c_str(), nullptr,
+            nullptr, user_data_folder_.c_str(), options.Get(),
             Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
                 [this](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
                     if (!SUCCEEDED(result)) {

@@ -53,7 +53,7 @@ WebviewWindow::~WebviewWindow() {
 void WebviewWindow::CreateAndShow(const std::wstring &title, int height, int width,
                                   const std::wstring &userDataFolder,
                                   int windowPosX, int windowPosY, bool useWindowPositionAndSize,
-                                  bool openMaximized, CreateCallback callback) {
+                                  bool openMaximized, CreateCallback callback, const std::wstring &proxy) {
 
   RegisterWindowClass(kWebViewWindowClassName, WebviewWindow::WndProc);
 
@@ -108,7 +108,7 @@ void WebviewWindow::CreateAndShow(const std::wstring &title, int height, int wid
         } else {
           callback(false);
         }
-      });
+      }, proxy);
 
   auto web_view_handle = web_view_->NativeWindow().get();
   SetParent(web_view_handle, hwnd_.get());

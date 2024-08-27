@@ -69,6 +69,7 @@ void WebviewWindowPlugin::HandleMethodCall(
         arguments->at(flutter::EncodableValue("windowPosX")).LongValue();
     auto windowPosY =
         arguments->at(flutter::EncodableValue("windowPosY")).LongValue();
+    auto proxy = std::get<std::string>(arguments->at(flutter::EncodableValue("proxy")));
 
     auto window_id = next_window_id_;
     auto window = std::make_unique<WebviewWindow>(
@@ -87,7 +88,7 @@ void WebviewWindowPlugin::HandleMethodCall(
             return;
           }
           result->Success(flutter::EncodableValue(window_id));
-        });
+        }, utf8_to_wide(proxy));
     next_window_id_++;
     windows_[window_id] = std::move(window);
   } else if (method_call.method_name() == "launch") {

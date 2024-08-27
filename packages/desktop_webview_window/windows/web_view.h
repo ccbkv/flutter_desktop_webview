@@ -26,7 +26,8 @@ class WebView {
   WebView(std::shared_ptr<flutter::MethodChannel<flutter::EncodableValue>> method_channel,
           int64_t web_view_id,
           std::wstring userDataFolder,
-          std::function<void(HRESULT)> on_web_view_created_callback
+          std::function<void(HRESULT)> on_web_view_created_callback,
+          std::wstring proxy
   );
 
   virtual ~WebView();
@@ -65,6 +66,8 @@ class WebView {
   void setTriggerOnUrlRequestedEvent(const bool value);
 
   bool shouldBlockUri(std::wstring uri);
+
+  void setProxy(std::wstring uri);
 
  private:
   wil::unique_hwnd view_window_;
