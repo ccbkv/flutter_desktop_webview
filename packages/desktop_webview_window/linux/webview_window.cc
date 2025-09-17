@@ -282,7 +282,7 @@ FlValue *WebviewWindow::GetAllCookies() {
     fl_value_set_string_take(cookie_map, "path",
                              fl_value_new_string(soup_cookie_get_path(cookie)));
 
-    auto expires = g_date_time_get_seconds(soup_cookie_get_expires(cookie));
+    auto expires = g_date_time_to_unix(soup_cookie_get_expires(cookie));
 
     if (expires >= 0) {
       fl_value_set_string_take(cookie_map, "expires",
