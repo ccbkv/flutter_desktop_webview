@@ -6,6 +6,8 @@
 
 #include <utility>
 
+#include <glib.h>
+
 #include "message_channel_plugin.h"
 
 #if WEBKIT_MAJOR_VERSION < 2 || \
